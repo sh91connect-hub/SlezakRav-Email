@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Slezák-RAV · Návrh e-mail marketing systému</title>
+  <meta name="description" content="Návrh e-mail marketing systému pro Slezák-RAV: vlastní publikum, automatizace, vodovodní baterie, sprchový program, koupelnové doplňky a náhradní díly."/>
+  <style>
+    :root {
+      --bg: #fbfaf7;
+      --bg-soft: #f4f7fb;
+      --paper: #ffffff;
+      --cream: #fff7ea;
+      --ink: #151820;
+      --ink-2: #202634;
+      --muted: #626977;
+      --line: rgba(21, 24, 32, .10);
+      --blue: #1f5fbf;
+      --blue-2: #0f3775;
+      --cyan: #47b7e8;
+      --orange: #f59b2f;
+      --green: #2f8f5b;
+      --grad: linear-gradient(135deg, #0f3775 0%, #1f5fbf 48%, #47b7e8 100%);
+      --grad-warm: linear-gradient(135deg, #f59b2f 0%, #ffd36a 100%);
+      --shadow: 0 24px 70px rgba(21, 24, 32, .10);
+      --shadow-soft: 0 16px 44px rgba(21, 24, 32, .07);
+      --radius-xl: 34px;
+      --radius-lg: 24px;
+      --max: 1180px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.58;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    a { color: inherit; text-decoration: none; }
+    strong { color: var(--ink); }
+
+    /*
+      ASSETY PRO GITHUB
+      Vytvoř složku /assets vedle index.html a nahraj:
+      assets/almao-logo.webp
+      assets/stefan-hrusovsky.webp
+      assets/slezak-rav-hero.png  (volitelné)
+    */
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(18px);
+      background: rgba(251, 250, 247, .88);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 15px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 900;
+      letter-spacing: -.02em;
+    }
+    .brand-logo { width: 118px; height: auto; display: block; }
+    .brand-fallback {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: var(--grad);
+      color: #fff;
+      font-weight: 950;
+    }
+    .nav-meta {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .pill {
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255,255,255,.72);
+      font-weight: 750;
+    }
+
+    .page { overflow: hidden; }
+    section { position: relative; padding: 94px 22px; }
+    .section-soft { background: var(--bg); }
+    .section-paper { background: var(--bg-soft); }
+    .section-dark {
+      background:
+        radial-gradient(circle at 13% 10%, rgba(71, 183, 232, .20), transparent 30%),
+        radial-gradient(circle at 88% 22%, rgba(245, 155, 47, .18), transparent 32%),
+        var(--ink);
+      color: #fff;
+    }
+    .container { max-width: var(--max); margin: 0 auto; position: relative; z-index: 2; }
+
+    .hero {
+      min-height: 720px;
+      display: grid;
+      align-items: center;
+      background:
+        radial-gradient(circle at 82% 18%, rgba(71, 183, 232, .28), transparent 30%),
+        radial-gradient(circle at 12% 18%, rgba(31, 95, 191, .14), transparent 31%),
+        var(--bg);
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      width: fit-content;
+      margin-bottom: 24px;
+      padding: 9px 14px;
+      border-radius: 999px;
+      background: #fff;
+      border: 1px solid var(--line);
+      box-shadow: 0 12px 30px rgba(21, 24, 32, .05);
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 850;
+    }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 {
+      max-width: 1040px;
+      margin-bottom: 24px;
+      font-size: clamp(46px, 7vw, 86px);
+      line-height: 1.03;
+      letter-spacing: -.045em;
+      font-weight: 940;
+    }
+    h2 {
+      max-width: 930px;
+      margin-bottom: 20px;
+      font-size: clamp(34px, 4.8vw, 62px);
+      line-height: 1.06;
+      letter-spacing: -.034em;
+      font-weight: 920;
+    }
+    h3 {
+      margin-bottom: 10px;
+      font-size: 24px;
+      line-height: 1.18;
+      letter-spacing: -.02em;
+      font-weight: 900;
+    }
+    .gradient-text {
+      background: var(--grad);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .lead {
+      max-width: 850px;
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: clamp(18px, 2vw, 22px);
+      line-height: 1.72;
+    }
+    .section-dark .lead { color: rgba(255,255,255,.76); }
+
+    .hero-image-wrap {
+      margin-top: 42px;
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background:
+        radial-gradient(circle at 24% 24%, rgba(71,183,232,.25), transparent 30%),
+        radial-gradient(circle at 72% 18%, rgba(245,155,47,.16), transparent 28%),
+        #fff;
+      box-shadow: var(--shadow);
+    }
+    .hero-image {
+      display: block;
+      width: 100%;
+      height: clamp(260px, 38vw, 430px);
+      object-fit: cover;
+      object-position: center;
+    }
+    .hero-placeholder {
+      min-height: clamp(260px, 38vw, 430px);
+      display: grid;
+      place-items: center;
+      padding: 44px;
+      text-align: center;
+      color: var(--muted);
+      font-weight: 850;
+    }
+
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+      font-size: 13px;
+      font-weight: 950;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--blue);
+    }
+    .section-label::before {
+      content: "";
+      width: 38px;
+      height: 2px;
+      border-radius: 999px;
+      background: var(--grad);
+    }
+    .section-dark .section-label { color: var(--cyan); }
+
+    .meta-strip {
+      margin-top: 38px;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0,1fr));
+      overflow: hidden;
+      border-radius: 24px;
+      background: #fff;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-soft);
+    }
+    .meta-strip div { padding: 17px 18px; border-right: 1px solid var(--line); }
+    .meta-strip div:last-child { border-right: 0; }
+    .meta-k {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+    .meta-v { display: block; font-weight: 900; line-height: 1.24; }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 44px;
+      align-items: stretch;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 42px;
+    }
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 42px;
+    }
+    .card {
+      border-radius: var(--radius-lg);
+      background: var(--paper);
+      border: 1px solid var(--line);
+      padding: 30px;
+      box-shadow: var(--shadow-soft);
+    }
+    .card p { color: var(--muted); margin-bottom: 0; }
+    .note-card {
+      background:
+        radial-gradient(circle at 12% 12%, rgba(71, 183, 232, .18), transparent 33%),
+        #f7fbff;
+      border-color: rgba(31, 95, 191, .16);
+    }
+    .warm-card {
+      background:
+        radial-gradient(circle at 12% 12%, rgba(245, 155, 47, .18), transparent 33%),
+        var(--cream);
+      border-color: rgba(245, 155, 47, .20);
+    }
+
+    .icon {
+      width: 52px;
+      height: 52px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 22px;
+      border-radius: 18px;
+      background: var(--grad);
+      color: #fff;
+      font-size: 24px;
+      box-shadow: 0 16px 34px rgba(31,95,191,.18);
+    }
+
+    .flow-card {
+      position: relative;
+      overflow: hidden;
+      min-height: 280px;
+    }
+    .flow-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 6px;
+      background: var(--grad);
+      border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+    }
+    .flow-card small {
+      display: inline-flex;
+      margin-bottom: 12px;
+      color: var(--blue);
+      font-weight: 950;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+
+    .dark-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 44px;
+    }
+    .dark-card {
+      border-radius: var(--radius-lg);
+      padding: 30px;
+      background: rgba(255,255,255,.055);
+      border: 1px solid rgba(255,255,255,.10);
+      color: rgba(255,255,255,.78);
+    }
+    .dark-card h3 { color: #fff; }
+    .dark-card p { color: rgba(255,255,255,.72); margin-bottom: 0; }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0,1fr));
+      gap: 14px;
+      margin-top: 44px;
+    }
+    .step {
+      min-height: 220px;
+      padding: 24px;
+      border-radius: 24px;
+      background: #fff;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-soft);
+    }
+    .step-num {
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 20px;
+      border-radius: 16px;
+      background: var(--grad);
+      color: #fff;
+      font-weight: 950;
+    }
+    .step p { color: var(--muted); margin-bottom: 0; font-size: 15px; }
+
+    .cta-card {
+      display: grid;
+      grid-template-columns: 1.08fr .92fr;
+      overflow: hidden;
+      border-radius: var(--radius-xl);
+      background: #fff;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+    .cta-left, .cta-right { padding: clamp(34px, 5vw, 58px); }
+    .cta-left {
+      background:
+        radial-gradient(circle at 12% 12%, rgba(71, 183, 232, .18), transparent 33%),
+        #f7fbff;
+    }
+    .cta-right { border-left: 1px solid var(--line); }
+    .btns { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 50px;
+      padding: 13px 20px;
+      border-radius: 999px;
+      background: var(--grad);
+      color: #fff;
+      font-weight: 950;
+      box-shadow: 0 16px 34px rgba(31,95,191,.22);
+    }
+    .btn.secondary {
+      background: #fff;
+      color: var(--ink);
+      border: 1px solid var(--line);
+      box-shadow: none;
+    }
+    .avatar-photo {
+      width: 98px;
+      height: 98px;
+      display: block;
+      object-fit: cover;
+      object-position: center;
+      border-radius: 28px;
+      margin-bottom: 22px;
+      border: 3px solid #fff;
+      box-shadow: 0 18px 42px rgba(31,95,191,.18);
+    }
+    .fallback-avatar {
+      width: 98px;
+      height: 98px;
+      display: grid;
+      place-items: center;
+      border-radius: 28px;
+      margin-bottom: 22px;
+      background: var(--grad);
+      color: #fff;
+      font-size: 34px;
+      font-weight: 950;
+    }
+
+    footer {
+      padding: 34px 22px;
+      background: var(--ink);
+      color: rgba(255,255,255,.62);
+      font-size: 14px;
+    }
+    .footer-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+
+    .proof-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 44px;
+      align-items: stretch;
+    }
+    .proof-card {
+      border-radius: var(--radius-xl);
+      background: #fff;
+      border: 1px solid var(--line);
+      padding: 32px;
+      box-shadow: var(--shadow-soft);
+    }
+    .proof-card h3 {
+      margin-bottom: 6px;
+    }
+    .proof-sub {
+      margin-bottom: 24px;
+      color: var(--muted);
+      font-size: 15px;
+      font-weight: 750;
+    }
+    .metric-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+    .metric {
+      border-radius: 18px;
+      padding: 16px;
+      background: #f7fbff;
+      border: 1px solid rgba(31, 95, 191, .12);
+    }
+    .metric strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 20px;
+      line-height: 1.1;
+      background: var(--grad);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      white-space: nowrap;
+    }
+    .metric span {
+      display: block;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+      font-weight: 760;
+    }
+    .campaign-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 18px;
+      overflow: hidden;
+      border-radius: 18px;
+      font-size: 14px;
+    }
+    .campaign-table th,
+    .campaign-table td {
+      padding: 12px 10px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+    .campaign-table th {
+      color: var(--ink);
+      font-size: 12px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      background: #f7fbff;
+    }
+    .campaign-table td {
+      color: var(--muted);
+      font-weight: 720;
+    }
+    .campaign-table tr:last-child td { border-bottom: 0; }
+    .proof-note {
+      margin-top: 24px;
+      padding: 18px;
+      border-radius: 20px;
+      background: var(--cream);
+      border: 1px solid rgba(245, 155, 47, .22);
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .template-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 22px;
+      margin-top: 44px;
+    }
+    .template-card {
+      overflow: hidden;
+      border-radius: var(--radius-lg);
+      background: #fff;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-soft);
+    }
+    .template-shot {
+      display: block;
+      width: 100%;
+      height: 360px;
+      overflow: hidden;
+      background: #f4f7fb;
+      border-bottom: 1px solid var(--line);
+    }
+    .template-shot img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      object-position: top center;
+      transition: transform .25s ease;
+    }
+    .template-card:hover .template-shot img {
+      transform: scale(1.025);
+    }
+    .template-body {
+      padding: 22px;
+    }
+    .template-body h3 {
+      font-size: 20px;
+      margin-bottom: 6px;
+    }
+    .template-body p {
+      color: var(--muted);
+      margin-bottom: 16px;
+      font-size: 15px;
+    }
+    .template-link {
+      display: inline-flex;
+      align-items: center;
+      font-weight: 950;
+      color: var(--blue);
+    }
+
+    @media (max-width: 980px) {
+      section { padding: 74px 20px; }
+      .hero { min-height: auto; }
+      .meta-strip, .grid-2, .grid-3, .grid-4, .dark-grid, .steps, .cta-card, .proof-grid, .template-grid {
+        grid-template-columns: 1fr;
+      }
+      .meta-strip div { border-right: 0; border-bottom: 1px solid var(--line); }
+      .meta-strip div:last-child { border-bottom: 0; }
+      .cta-right { border-left: 0; border-top: 1px solid var(--line); }
+    }
+    @media (max-width: 640px) {
+      .nav { align-items: flex-start; flex-direction: column; }
+      .nav-meta { justify-content: flex-start; }
+      h1 { font-size: clamp(40px, 13vw, 58px); }
+      h2 { font-size: clamp(32px, 10vw, 46px); }
+      .card, .dark-card, .step, .proof-card { padding: 24px; }
+      .metric-row { grid-template-columns: 1fr; }
+      .template-shot { height: 300px; }
+      .btn { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+  <header class="topbar">
+    <nav aria-label="Hlavní navigace" class="nav">
+      <a aria-label="Almao" class="brand" href="#top">
+        <img alt="Almao" class="brand-logo" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'brand-fallback',textContent:'A'}))" src="assets/almao-logo.webp"/>
+      </a>
+      <div class="nav-meta">
+        <span class="pill">Pro Slezák-RAV</span>
+        <span class="pill">Návrh e-mail marketing systému</span>
+      </div>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero section-soft" aria-label="Úvod">
+      <div class="container">
+        <div class="eyebrow">💧 E-mail marketing jako vlastní obchodní kanál</div>
+        <h1>E-mail marketing pro značku,<br>která nestaví jen na ceně,<br><span class="gradient-text">ale na důvěře a kvalitě.</span></h1>
+        <p class="lead">
+          Slezák-RAV není jen e-shop. Je to tradiční český výrobce vodovodních baterií a koupelnových doplňků, kde hraje velkou roli design, kvalita, precizní zpracování a důvěra ve výrobce. Právě proto dává e-mail marketing smysl — zákazník často nevybírá jen podle ceny, ale podle jistoty, stylu, povrchové úpravy, záruky a technického řešení.
+        </p>
+
+        <div class="hero-image-wrap">
+          <img alt="Slezák-RAV hero" class="hero-image" src="assets/slezak-rav-hero.png" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'hero-placeholder',innerHTML:'Volitelný banner: assets/slezak-rav-hero.png<br>Pokud ho nenahrajete, stránka funguje i bez něj.'}))"/>
+        </div>
+
+        <div class="meta-strip">
+          <div><span class="meta-k">E-shop</span><span class="meta-v">slezak-rav.cz</span></div>
+          <div><span class="meta-k">Aktuálně</span><span class="meta-v">bez e-mail marketingu</span></div>
+          <div><span class="meta-k">Cíl</span><span class="meta-v">vlastní publikum a automatizace</span></div>
+          <div><span class="meta-k">Fokus</span><span class="meta-v">baterie, sprchy, doplňky, náhradní díly</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-paper" id="proc">
+      <div class="container">
+        <span class="section-label">Proč to řešit</span>
+        <h2>Reklama přivede návštěvu. E-mailing z ní buduje vztah.</h2>
+        <p class="lead">
+          U sortimentu jako vodovodní baterie, sprchový program, koupelnové doplňky, sifony, výpustě, ventily a náhradní díly zákazník často porovnává, vrací se, řeší technické parametry, vzhled, kompatibilitu a důvěru. Právě proto dává smysl mít systém, který s ním pracuje i po odchodu z webu.
+        </p>
+
+        <div class="grid-3">
+          <article class="card">
+            <div class="icon">01</div>
+            <h3>Návštěvník odchází bez kontaktu</h3>
+            <p>
+              Pokud zákazník přijde z reklamy nebo vyhledávání a nezanechá e-mail, e-shop ho ztrácí. Při další komunikaci je znovu závislý na placené návštěvnosti.
+            </p>
+          </article>
+          <article class="card">
+            <div class="icon">02</div>
+            <h3>Košík nemusí znamenat konec zájmu</h3>
+            <p>
+              Opuštěný košík často není odmítnutí. Zákazník jen porovnává, přemýšlí, řeší montáž, dostupnost, cenu, design nebo se k nákupu potřebuje vrátit později.
+            </p>
+          </article>
+          <article class="card">
+            <div class="icon">03</div>
+            <h3>Po nákupu vzniká další kontakt</h3>
+            <p>
+              Po objednávce je prostor poděkovat, ověřit spokojenost, získat recenzi, nabídnout podporu a udržet zákazníka pro další nákup nebo budoucí projekt.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-soft" id="publikum">
+      <div class="container">
+        <span class="section-label">Vlastní publikum</span>
+        <h2>Nejlevnější kontakt je ten, který už máte.</h2>
+        <p class="lead">
+          E-mail marketing je jedna z nejefektivnějších forem další komunikace, protože neplatíte znovu za každý zásah jako u reklamy. Jakmile zákazník dobrovolně zanechá kontakt, můžete s ním pracovat dlouhodobě, segmentovaně a podle jeho reálného zájmu.
+        </p>
+
+        <div class="grid-2">
+          <article class="card note-card">
+            <h3>Co znamená vlastní publikum</h3>
+            <p>
+              Databáze kontaktů, které přišly z webu, nákupu, formuláře, košíku nebo newsletteru. Nejsou to anonymní návštěvy. Jsou to lidé, u kterých víme, že se zajímali o vodovodní baterie, sprchový program, koupelnové doplňky, sifony, výpustě, ventily nebo náhradní díly.
+            </p>
+          </article>
+          <article class="card warm-card">
+            <h3>Proč je to levnější</h3>
+            <p>
+              Reklama je důležitá pro přivádění nových lidí. E-mailing ale pomáhá vytěžit návštěvnost, za kterou už jste zaplatili. Neznamená to vypnout reklamu. Znamená to, že z ní získáte víc.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+
+    <section class="section-soft" id="dukaz">
+      <div class="container">
+        <span class="section-label">Důkaz z praxe</span>
+        <h2>Nejen teorie. Reálné výsledky.</h2>
+        <p class="lead">
+          E-mail marketing nemá stát jen na hezkém designu. Má mít jasnou logiku, doručitelnost, dobré texty a měřitelný dopad. Níže jsou ukázky výsledků z projektů, na kterých pracuji.
+        </p>
+
+        <div class="proof-grid">
+          <article class="proof-card">
+            <h3>Střelecký ráj · automatizace</h3>
+            <div class="proof-sub">Výsledky z automatizovaných sérií v e-shopu.</div>
+
+            <div class="metric-row">
+              <div class="metric">
+                <strong>17 118 €</strong>
+                <span>Welcome série<br>tržby z automatizace</span>
+              </div>
+              <div class="metric">
+                <strong>2 788 €</strong>
+                <span>Opuštěný košík<br>tržby z automatizace</span>
+              </div>
+              <div class="metric">
+                <strong>1 067 €</strong>
+                <span>Reaktivace<br>tržby z automatizace</span>
+              </div>
+            </div>
+
+            <div class="proof-note">
+              Výsledky se nedají garantovat 1:1. Závisí na velikosti databáze, sortimentu, marži, sezóně, důvěře značky a kvalitě návštěvnosti. Ukazují ale, proč má smysl automatizace vůbec stavět.
+            </div>
+          </article>
+
+          <article class="proof-card">
+            <h3>Víno Hruška · newslettery</h3>
+            <div class="proof-sub">Ukázka pravidelné kampanové komunikace a práce s databází.</div>
+
+            <table class="campaign-table" aria-label="Výsledky newsletterů Víno Hruška">
+              <thead>
+                <tr>
+                  <th>Kampaň</th>
+                  <th>Doručeno</th>
+                  <th>Open</th>
+                  <th>CTR</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Body | SK</td>
+                  <td>1 812</td>
+                  <td>29,97 %</td>
+                  <td>4,36 %</td>
+                </tr>
+                <tr>
+                  <td>Zlúčenie kartičiek</td>
+                  <td>320</td>
+                  <td>26,56 %</td>
+                  <td>0,00 %</td>
+                </tr>
+                <tr>
+                  <td>Body | Apríl/Máj | FU</td>
+                  <td>6 448</td>
+                  <td>11,00 %</td>
+                  <td>1,60 %</td>
+                </tr>
+                <tr>
+                  <td>Body | Apríl/Máj</td>
+                  <td>7 696</td>
+                  <td>48,65 %</td>
+                  <td>4,33 %</td>
+                </tr>
+                <tr>
+                  <td>Mango Kir | SK</td>
+                  <td>1 821</td>
+                  <td>36,52 %</td>
+                  <td>2,64 %</td>
+                </tr>
+              </tbody>
+            </table>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-paper" id="sablony">
+      <div class="container">
+        <span class="section-label">Ukázky šablon</span>
+        <h2>Jak vypadá moje práce v inboxu</h2>
+        <p class="lead">
+          Nejde jen o posílání textu. Profesionální e-mail musí dobře vypadat, být přehledný, působit důvěryhodně a zároveň vést zákazníka k dalšímu kroku. Náhledy níže si může klient otevřít celé v novém okně.
+        </p>
+
+        <div class="template-grid">
+          <article class="template-card">
+            <a class="template-shot" href="assets/vino-hruska-vernostny-program.png" target="_blank" rel="noopener">
+              <img alt="Víno Hruška · věrnostní program" src="assets/vino-hruska-vernostny-program.png"/>
+            </a>
+            <div class="template-body">
+              <h3>Víno Hruška</h3>
+              <p>Ukázka e-mailu pro věrnostní komunikaci a práci se zákaznickou databází.</p>
+              <a class="template-link" href="assets/vino-hruska-vernostny-program.png" target="_blank" rel="noopener">Otevřít celou šablonu →</a>
+            </div>
+          </article>
+
+          <article class="template-card">
+            <a class="template-shot" href="assets/snackstore-produktovy-newsletter.png" target="_blank" rel="noopener">
+              <img alt="Snackstore · produktový newsletter" src="assets/snackstore-produktovy-newsletter.png"/>
+            </a>
+            <div class="template-body">
+              <h3>Snackstore</h3>
+              <p>Produktová a promo komunikace s jasnou nabídkou, strukturou a CTA prvky.</p>
+              <a class="template-link" href="assets/snackstore-produktovy-newsletter.png" target="_blank" rel="noopener">Otevřít celou šablonu →</a>
+            </div>
+          </article>
+
+          <article class="template-card">
+            <a class="template-shot" href="assets/afra-produktovy-newsletter.png" target="_blank" rel="noopener">
+              <img alt="AfraBio · produktový newsletter" src="assets/afra-produktovy-newsletter.png"/>
+            </a>
+            <div class="template-body">
+              <h3>AfraBio</h3>
+              <p>Prémiovější produktový newsletter s důrazem na značku, edukaci a důvěru.</p>
+              <a class="template-link" href="assets/afra-produktovy-newsletter.png" target="_blank" rel="noopener">Otevřít celou šablonu →</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+
+    <section class="section-dark" id="jak">
+      <div class="container">
+        <span class="section-label">Jak to funguje</span>
+        <h2>Systém, který pracuje za vás.</h2>
+        <p class="lead">
+          Základem nejsou náhodné newslettery. Základem jsou automatizace, které se spouští podle chování zákazníka: nový kontakt, opuštěný košík, nákup, neaktivita nebo zájem o konkrétní kategorii.
+        </p>
+
+        <div class="dark-grid">
+          <article class="dark-card">
+            <h3>1. Zachycení kontaktu</h3>
+            <p>Pop-up, formulář nebo uvítací mechanismus s jasným důvodem, proč má zákazník zanechat e-mail.</p>
+          </article>
+          <article class="dark-card">
+            <h3>2. Rozlišení zájmu</h3>
+            <p>Zákazník se může zařadit podle toho, jestli řeší vodovodní baterii, sprchový program, koupelnový doplněk, sifon, výpust, ventil nebo náhradní díl.</p>
+          </article>
+          <article class="dark-card">
+            <h3>3. Automatická komunikace</h3>
+            <p>Podle chování dostává relevantní e-maily: uvítání, košík, po nákupu, reaktivace nebo tematický newsletter.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-paper" id="cesta">
+      <div class="container">
+        <span class="section-label">Zákaznická cesta</span>
+        <h2>Kde e-mailing pomáhá</h2>
+        <p class="lead">
+          E-mail marketing má kopírovat reálné nákupní chování. Zákazník nejdřív hledá řešení, potom porovnává, často se ptá nebo váhá a teprve potom objednává.
+        </p>
+
+        <div class="steps">
+          <article class="step">
+            <span class="step-num">01</span>
+            <h3>Návštěva</h3>
+            <p>Zákazník přijde z reklamy, vyhledávání, doporučení nebo přímé návštěvy.</p>
+          </article>
+          <article class="step">
+            <span class="step-num">02</span>
+            <h3>Zájem</h3>
+            <p>Prohlíží vodovodní baterie, sprchový program, koupelnové doplňky, sifony, výpustě, ventily nebo náhradní díly.</p>
+          </article>
+          <article class="step">
+            <span class="step-num">03</span>
+            <h3>Košík</h3>
+            <p>Produkt vloží do košíku, ale může ještě řešit parametry, cenu, dostupnost nebo montáž.</p>
+          </article>
+          <article class="step">
+            <span class="step-num">04</span>
+            <h3>Nákup</h3>
+            <p>Objedná produkt a vzniká prostor pro podporu, spokojenost a další vztah.</p>
+          </article>
+          <article class="step">
+            <span class="step-num">05</span>
+            <h3>Návrat</h3>
+            <p>Po čase se dá zákazník vrátit přes reaktivaci, sezónní téma nebo nové řešení.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-soft" id="automatizace">
+      <div class="container">
+        <span class="section-label">Automatizace</span>
+        <h2>První systém pro Slezák-RAV</h2>
+        <p class="lead">
+          Pokud e-shop zatím e-mail marketing neřeší, není potřeba začít složitě. Nejprve má smysl postavit základ, který zachytí kontakt, vrátí košík a udrží vztah po objednávce.
+        </p>
+
+        <div class="grid-4">
+          <article class="card flow-card">
+            <small>Automatizace 01</small>
+            <h3>Uvítací série</h3>
+            <p>
+              Zachytí nový kontakt, představí značku, ukáže hlavní sortiment a ideálně zjistí, co zákazník řeší: vodovodní baterie, sprchový program, koupelnové doplňky, sifony, výpustě, ventily nebo náhradní díly.
+            </p>
+          </article>
+          <article class="card flow-card">
+            <small>Automatizace 02</small>
+            <h3>Opuštěný košík</h3>
+            <p>
+              Připomene rozpracovaný nákup, odbourá nejistotu a vrátí zákazníka zpět k produktu, který už si vybral.
+            </p>
+          </article>
+          <article class="card flow-card">
+            <small>Automatizace 03</small>
+            <h3>Po nákupu</h3>
+            <p>
+              Poděkování, kontrola spokojenosti, podpora a žádost o recenzi. Jednoduchá série, která nevyžaduje rozsáhlé návody ani videa.
+            </p>
+          </article>
+          <article class="card flow-card">
+            <small>Automatizace 04</small>
+            <h3>Reaktivace</h3>
+            <p>
+              Vrací lidi, kteří delší dobu nereagovali nebo nenakoupili. Cílem není tlačit slevu, ale dát relevantní důvod vrátit se zpět.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-dark" id="newsletter">
+      <div class="container">
+        <span class="section-label">Newsletter</span>
+        <h2>Newsletter jako nadstavba, ne základ.</h2>
+        <p class="lead">
+          Pravidelný newsletter má smysl až ve chvíli, kdy máme postavené automatizace. Potom může pracovat s novinkami, kolekcemi, konkrétním sortimentem, sezónními tématy, inspirací pro koupelnu a kuchyň nebo servisními informacemi.
+        </p>
+
+        <div class="dark-grid">
+          <article class="dark-card">
+            <h3>Novinky a produktové řady</h3>
+            <p>Nové produktové řady, designové varianty, povrchové úpravy, sprchový program, koupelnové doplňky nebo náhradní díly.</p>
+          </article>
+          <article class="dark-card">
+            <h3>Výběrová inspirace</h3>
+            <p>Jak vybrat vodovodní baterii, sprchový program, sifon, výpust, ventil nebo koupelnový doplněk bez toho, aby zákazník musel vše řešit sám.</p>
+          </article>
+          <article class="dark-card">
+            <h3>Servis a důvěra</h3>
+            <p>Náhradní díly, záruky, podpora, údržba, komponenty a témata, která posilují jistotu při nákupu.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-paper" id="plan">
+      <div class="container">
+        <span class="section-label">Doporučený postup</span>
+        <h2>Jak bych začal</h2>
+        <div class="grid-3">
+          <article class="card">
+            <div class="icon">1</div>
+            <h3>Technický základ</h3>
+            <p>Doména, doručitelnost, formuláře, napojení e-shopu, základní segmenty a měření.</p>
+          </article>
+          <article class="card">
+            <div class="icon">2</div>
+            <h3>První automatizace</h3>
+            <p>Uvítací série, opuštěný košík, ponákupové navázání a jednoduchá reaktivace.</p>
+          </article>
+          <article class="card">
+            <div class="icon">3</div>
+            <h3>Newsletterový rytmus</h3>
+            <p>Až potom pravidelná komunikace podle sortimentu, sezóny a toho, co zákazníci skutečně řeší.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-soft" id="kontakt">
+      <div class="container">
+        <div class="cta-card">
+          <div class="cta-left">
+            <span class="section-label">Další krok</span>
+            <h2>Nejdřív postavit systém. Potom škálovat komunikaci.</h2>
+            <p class="lead">
+              Cílem není posílat e-maily jen proto, aby se něco posílalo. Cílem je vytvořit vlastní publikum a automatizace, které z návštěvníků, košíků a zákazníků vytěží víc než samotná reklama.
+            </p>
+            <div class="btns">
+              <a class="btn" href="mailto:s.hrusovsky@almao.cz?subject=Slez%C3%A1k-RAV%20-%20e-mail%20marketing">✉ Napsat Štefanovi</a>
+              <a class="btn secondary" href="tel:+420705988788">Zavolat: +420 705 988 788</a>
+            </div>
+          </div>
+          <div class="cta-right">
+            <img alt="Štefan Hrušovský" class="avatar-photo" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'fallback-avatar',textContent:'ŠH'}))" src="assets/stefan-hrusovsky.webp"/>
+            <h3>Štefan Hrušovský</h3>
+            <p><strong>Almao · e-mail marketing</strong></p>
+            <p style="color:var(--muted)">
+              Pomáhám menším a středním e-shopům v SK/CZ trhu nastavit e-mail marketing tak, aby nebyl jen o newsletterech, ale o systému na opakované nákupy a vlastní publikum.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <span>© Almao · Štefan Hrušovský</span>
+      <span>Pro Slezák-RAV</span>
+    </div>
+  </footer>
+</div>
+</body>
+</html>
